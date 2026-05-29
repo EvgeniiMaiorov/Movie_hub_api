@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Movie } from './interfaces/movie.interface';
 import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
 
 @Injectable()
 export class MoviesService {
@@ -25,7 +26,7 @@ export class MoviesService {
     return newMovie;
   }
 
-  update(id: number, updatedMovie: Partial<Omit<Movie, 'id'>>): Movie | null {
+  update(id: number, updatedMovieDto: UpdateMovieDto): Movie | null {
     const movieIndex = this.movies.findIndex((movie) => movie.id === id);
 
     if (movieIndex < 0) {
@@ -34,7 +35,7 @@ export class MoviesService {
 
     this.movies[movieIndex] = {
       ...this.movies[movieIndex],
-      ...updatedMovie,
+      ...updatedMovieDto,
     };
 
     return this.movies[movieIndex];
