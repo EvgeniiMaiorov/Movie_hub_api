@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Movie } from './interfaces/movie.interface';
+import { CreateMovieDto } from './dto/create-movie.dto';
 
 @Injectable()
 export class MoviesService {
@@ -13,10 +14,10 @@ export class MoviesService {
     return this.movies.find((movie) => movie.id === id) || null;
   }
 
-  create(movie: Omit<Movie, 'id'>): Movie {
+  create(createMovieDto: CreateMovieDto): Movie {
     const newMovie = {
       id: this.movies.length + 1,
-      ...movie,
+      ...createMovieDto,
     };
 
     this.movies.push(newMovie);

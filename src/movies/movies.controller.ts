@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { MoviesService } from './movies.service';
-import { Movie } from './interfaces/movie.interface';
+import { CreateMovieDto } from './dto/create-movie.dto';
 
 @Controller('movies')
 export class MoviesController {
@@ -12,7 +12,7 @@ export class MoviesController {
   }
 
   @Post()
-  create(@Body() movie: Omit<Movie, 'id'>) {
-    return this.moviesService.create(movie);
+  create(@Body() createMovieDto: CreateMovieDto) {
+    return this.moviesService.create(createMovieDto);
   }
 }
