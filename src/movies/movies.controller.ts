@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -32,5 +33,16 @@ export class MoviesController {
   @Post()
   create(@Body() createMovieDto: CreateMovieDto) {
     return this.moviesService.create(createMovieDto);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    const isDeleted = this.moviesService.delete(Number(id));
+
+    if (!isDeleted) {
+      throw new NotFoundException(`Movie with id ${id} not found`);
+    }
+
+    return { message: `Movie with id ${id} has been deleted successfully` };
   }
 }

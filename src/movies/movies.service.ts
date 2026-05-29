@@ -27,6 +27,7 @@ export class MoviesService {
 
   update(id: number, updatedMovie: Partial<Omit<Movie, 'id'>>): Movie | null {
     const movieIndex = this.movies.findIndex((movie) => movie.id === id);
+
     if (movieIndex < 0) {
       return null;
     }
@@ -41,6 +42,7 @@ export class MoviesService {
 
   delete(id: number): boolean {
     const movieIndex = this.movies.findIndex((movie) => movie.id === id);
+
     if (movieIndex < 0) {
       return false;
     }
