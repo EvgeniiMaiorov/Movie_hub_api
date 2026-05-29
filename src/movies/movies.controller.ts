@@ -12,6 +12,7 @@ import {
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { ParseIntPipe } from '@nestjs/common';
 
 @Controller('movies')
 export class MoviesController {
@@ -23,8 +24,8 @@ export class MoviesController {
   }
 
   @Get(':id')
-  findById(@Param('id') id: string) {
-    const movie = this.moviesService.findById(Number(id));
+  findById(@Param('id', ParseIntPipe) id: number) {
+    const movie = this.moviesService.findById(id);
 
     if (!movie) {
       throw new NotFoundException(`Movie with id ${id} not found`);
@@ -38,8 +39,8 @@ export class MoviesController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    const isDeleted = this.moviesService.delete(Number(id));
+  delete(@Param('id', ParseIntPipe) id: number) {
+    const isDeleted = this.moviesService.delete(id);
 
     if (!isDeleted) {
       throw new NotFoundException(`Movie with id ${id} not found`);
@@ -49,8 +50,11 @@ export class MoviesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatedMovieDto: UpdateMovieDto) {
-    const updatedMovie = this.moviesService.update(Number(id), updatedMovieDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatedMovieDto: UpdateMovieDto,
+  ) {
+    const updatedMovie = this.moviesService.update(id, updatedMovieDto);
 
     if (!updatedMovie) {
       throw new NotFoundException(`Movie with id ${id} not found`);
