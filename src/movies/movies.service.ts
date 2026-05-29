@@ -1,0 +1,51 @@
+import { Injectable } from '@nestjs/common';
+import { Movie } from './interfaces/movie.interface';
+
+@Injectable()
+export class MoviesService {
+  private movies: Movie[] = [];
+
+  findAll(): Movie[] {
+    return this.movies;
+  }
+
+  findById(id: number): Movie | null {
+    return this.movies.find((movie) => movie.id === id) || null;
+  }
+
+  create(movie: Omit<Movie, 'id'>): Movie {
+    const newMovie = {
+      id: this.movies.length + 1,
+      ...movie,
+    };
+
+    this.movies.push(newMovie);
+
+    return newMovie;
+  }
+
+  update(id: number, updatedMovie: Partial<Omit<Movie, 'id'>>): Movie | null {
+    const movieIndex = this.movies.findIndex((movie) => movie.id === id);
+    if (movieIndex < 0) {
+      return null;
+    }
+
+    this.movies[movieIndex] = {
+      ...this.movies[movieIndex],
+      ...updatedMovie,
+    };
+
+    return this.movies[movieIndex];
+  }
+
+  delete(id: number): boolean {
+    const movieIndex = this.movies.findIndex((movie) => movie.id === id);
+    if (movieIndex < 0) {
+      return false;
+    }
+
+    this.movies.splice(movieIndex, 1);
+
+    return true;
+  }
+}
