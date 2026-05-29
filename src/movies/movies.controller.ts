@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
+
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 
@@ -13,7 +21,12 @@ export class MoviesController {
 
   @Get(':id')
   findById(@Param('id') id: string) {
-    return this.moviesService.findById(Number(id));
+    const movie = this.moviesService.findById(Number(id));
+
+    if (!movie) {
+      throw new NotFoundException(`Movie with id ${id} not found`);
+    }
+    return movie;
   }
 
   @Post()
