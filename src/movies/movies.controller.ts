@@ -24,8 +24,8 @@ export class MoviesController {
   }
 
   @Get(':id')
-  findById(@Param('id', ParseIntPipe) id: number) {
-    const movie = this.moviesService.findById(id);
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const movie = await this.moviesService.findById(id);
 
     if (!movie) {
       throw new NotFoundException(`Movie with id ${id} not found`);
@@ -39,12 +39,8 @@ export class MoviesController {
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number) {
-    const isDeleted = this.moviesService.delete(id);
-
-    if (!isDeleted) {
-      throw new NotFoundException(`Movie with id ${id} not found`);
-    }
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    await this.moviesService.delete(id);
 
     return { message: `Movie with id ${id} has been deleted successfully` };
   }
@@ -54,12 +50,6 @@ export class MoviesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updatedMovieDto: UpdateMovieDto,
   ) {
-    const updatedMovie = this.moviesService.update(id, updatedMovieDto);
-
-    if (!updatedMovie) {
-      throw new NotFoundException(`Movie with id ${id} not found`);
-    }
-
-    return updatedMovie;
+    return this.moviesService.update(id, updatedMovieDto);
   }
 }
