@@ -1,55 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { Movie } from './interfaces/movie.interface';
+import { PrismaService } from 'src/prisma.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 
 @Injectable()
 export class MoviesService {
-  private movies: Movie[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Movie[] {
-    return this.movies;
+  findAll() {
+    return this.prisma.movie.findMany();
   }
 
-  findById(id: number): Movie | null {
-    return this.movies.find((movie) => movie.id === id) || null;
+  findById(id: number) {
+    return this.prisma.movie.findUnique({
+      where: { id },
+    });
   }
 
-  create(createMovieDto: CreateMovieDto): Movie {
-    const newMovie = {
-      id: this.movies.length + 1,
-      ...createMovieDto,
-    };
-
-    this.movies.push(newMovie);
-
-    return newMovie;
+  create(createMovieDto: CreateMovieDto) {
+    return this.prisma.movie.create({
+      data: createMovieDto,
+    });
   }
 
-  update(id: number, updatedMovieDto: UpdateMovieDto): Movie | null {
-    const movieIndex = this.movies.findIndex((movie) => movie.id === id);
-
-    if (movieIndex < 0) {
-      return null;
-    }
-
-    this.movies[movieIndex] = {
-      ...this.movies[movieIndex],
-      ...updatedMovieDto,
-    };
-
-    return this.movies[movieIndex];
+  update(id: number, updatedMovieDto: UpdateMovieDto) {
+    return this.prisma.movie.update({
+      where: { id },
+      data: updatedMovieDto,
+    });
   }
 
-  delete(id: number): boolean {
-    const movieIndex = this.movies.findIndex((movie) => movie.id === id);
-
-    if (movieIndex < 0) {
-      return false;
-    }
-
-    this.movies.splice(movieIndex, 1);
-
-    return true;
+  delete(id: number) {
+    return this.prisma.movie.delete({
+      where: { id },
+    });
   }
 }
