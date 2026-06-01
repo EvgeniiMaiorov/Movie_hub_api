@@ -53,9 +53,18 @@ export class MoviesService {
     };
   }
 
-  findById(id: number) {
+  findById(id: number, includeReviews = false) {
     return this.prisma.movie.findUnique({
       where: { id },
+      include: includeReviews
+        ? {
+            reviews: {
+              orderBy: {
+                createdAt: 'desc',
+              },
+            },
+          }
+        : undefined,
     });
   }
 

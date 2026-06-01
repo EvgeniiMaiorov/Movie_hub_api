@@ -30,8 +30,14 @@ export class MoviesController {
   }
 
   @Get(':id')
-  async findById(@Param('id', ParseIntPipe) id: number) {
-    const movie = await this.moviesService.findById(id);
+  async findById(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('includeReviews') includeReviews?: string,
+  ) {
+    const movie = await this.moviesService.findById(
+      id,
+      includeReviews === 'true',
+    );
 
     if (!movie) {
       throw new NotFoundException(`Movie with id ${id} not found`);
