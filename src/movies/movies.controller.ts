@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 
 import { MoviesService } from './movies.service';
@@ -19,8 +20,8 @@ export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
   @Get()
-  findAll() {
-    return this.moviesService.findAll();
+  findAll(@Query('page') page = '1', @Query('limit') limit = '10') {
+    return this.moviesService.findAll(Number(page), Number(limit));
   }
 
   @Get(':id')
