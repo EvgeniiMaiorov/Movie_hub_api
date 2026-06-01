@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewsService } from './reviews.service';
 
@@ -14,5 +21,10 @@ export class ReviewsController {
   @Get()
   findAll() {
     return this.reviewsService.findAll();
+  }
+
+  @Get('movie/:movieId')
+  findByMovieId(@Param('movieId', ParseIntPipe) movieId: number) {
+    return this.reviewsService.findByMovieId(movieId);
   }
 }

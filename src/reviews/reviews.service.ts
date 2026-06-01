@@ -19,4 +19,11 @@ export class ReviewsService {
       },
     });
   }
+
+  findByMovieId(movieId: number) {
+    return this.prisma.review.findMany({
+      where: { movieId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 }
