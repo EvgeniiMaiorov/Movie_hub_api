@@ -1,8 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MoviesService {
@@ -24,38 +23,16 @@ export class MoviesService {
     });
   }
 
-  async update(id: number, updatedMovieDto: UpdateMovieDto) {
-    try {
-      return await this.prisma.movie.update({
-        where: { id },
-        data: updatedMovieDto,
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException(`Movie with id ${id} not found`);
-      }
-
-      throw error;
-    }
+  update(id: number, updatedMovieDto: UpdateMovieDto) {
+    return this.prisma.movie.update({
+      where: { id },
+      data: updatedMovieDto,
+    });
   }
 
-  async delete(id: number) {
-    try {
-      return await this.prisma.movie.delete({
-        where: { id },
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException(`Movie with id ${id} not found`);
-      }
-
-      throw error;
-    }
+  delete(id: number) {
+    return this.prisma.movie.delete({
+      where: { id },
+    });
   }
 }
