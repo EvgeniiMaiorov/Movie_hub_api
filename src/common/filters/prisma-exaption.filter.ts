@@ -24,6 +24,14 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       });
     }
 
+    if (exception.code === 'P2003') {
+      return response.status(400).json({
+        statusCode: 400,
+        message: 'Related record does not exist',
+        error: 'Bad Request',
+      });
+    }
+
     throw exception;
   }
 }
