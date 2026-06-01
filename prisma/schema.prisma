@@ -16,4 +16,18 @@ model Movie {
   rating      Float
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  reviews     Review[]
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  text      String
+  rating    Int
+  author    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  movieId   Int
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
 }
