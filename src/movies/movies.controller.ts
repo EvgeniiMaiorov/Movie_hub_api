@@ -15,10 +15,14 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { ParseIntPipe } from '@nestjs/common';
 import { PaginationDto } from './dto/pagination.dto';
+import { ReviewsService } from '../reviews/reviews.service';
 
 @Controller('movies')
 export class MoviesController {
-  constructor(private readonly moviesService: MoviesService) {}
+  constructor(
+    private readonly moviesService: MoviesService,
+    private readonly reviewsService: ReviewsService,
+  ) {}
 
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
@@ -33,6 +37,17 @@ export class MoviesController {
       throw new NotFoundException(`Movie with id ${id} not found`);
     }
     return movie;
+  }
+
+  @Get(':id/reviews')
+  async findReviews(@Param('id', ParseIntPipe) id: number) {
+    const movie = await this.moviesService.findById(id);
+
+    if (!movie) {
+      throw new NotFoundException(`Movie with id ${id} not found`);
+    }
+
+    return this.reviewsService.findByMovieId(id);
   }
 
   @Post()
