@@ -2,21 +2,44 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Injectable()
 export class MoviesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(page: number, limit: number) {
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit, search } = paginationDto;
+
     const skip = (page - 1) * limit;
+
+    const where = search
+      ? {
+          OR: [
+            {
+              title: {
+                contains: search,
+                mode: 'insensitive' as const,
+              },
+            },
+            {
+              genre: {
+                contains: search,
+                mode: 'insensitive' as const,
+              },
+            },
+          ],
+        }
+      : {};
 
     const [items, total] = await Promise.all([
       this.prisma.movie.findMany({
+        where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'asc' },
+        orderBy: { id: 'asc' },
       }),
-      this.prisma.movie.count(),
+      this.prisma.movie.count({ where }),
     ]);
 
     return {
