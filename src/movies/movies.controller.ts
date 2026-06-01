@@ -14,14 +14,14 @@ import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { ParseIntPipe } from '@nestjs/common';
-
+import { PaginationDto } from './dto/pagination.dto';
 @Controller('movies')
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
   @Get()
-  findAll(@Query('page') page = '1', @Query('limit') limit = '10') {
-    return this.moviesService.findAll(Number(page), Number(limit));
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.moviesService.findAll(paginationDto.page, paginationDto.limit);
   }
 
   @Get(':id')
