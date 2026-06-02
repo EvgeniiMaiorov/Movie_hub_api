@@ -21,13 +21,30 @@ export class ReviewsService {
     return this.prisma.review.findMany({
       include: {
         movie: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
+        },
       },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
   findByMovieId(movieId: number) {
     return this.prisma.review.findMany({
       where: { movieId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
