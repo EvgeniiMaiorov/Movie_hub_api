@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { UpdateReviewDto } from './dto/update-review.dto';
 
 @Injectable()
 export class ReviewsService {
@@ -68,6 +69,13 @@ export class ReviewsService {
   delete(id: number) {
     return this.prisma.review.delete({
       where: { id },
+    });
+  }
+
+  update(id: number, updatedReviewDto: UpdateReviewDto) {
+    return this.prisma.review.update({
+      where: { id },
+      data: updatedReviewDto,
     });
   }
 }

@@ -7,10 +7,12 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReviewsService } from './reviews.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -58,5 +60,25 @@ export class ReviewsController {
     await this.reviewsService.delete(id);
 
     return { message: 'Review deleted successfully' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatedReviewDto: UpdateReviewDto,
+    @CurrentUser() user: AuthUser,
+  ) {
+    const review = await this.reviewsService.findById(id);
+
+    if (!review) {
+      throw new NotFoundException(`Review with id ${id} not found`);
+    }
+
+    if (review.userId !== user.id) {
+      throw new ForbiddenException('You can only update your own reviews');
+    }
+
+    return this.reviewsService.update(id, updatedReviewDto);
   }
 }
