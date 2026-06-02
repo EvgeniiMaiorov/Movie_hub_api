@@ -6,9 +6,15 @@ import { CreateReviewDto } from './dto/create-review.dto';
 export class ReviewsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createReviewDto: CreateReviewDto) {
+  create(createReviewDto: CreateReviewDto, userId: number) {
     return this.prisma.review.create({
-      data: createReviewDto,
+      data: {
+        text: createReviewDto.text,
+        rating: createReviewDto.rating,
+        movieId: createReviewDto.movieId,
+        userId,
+        author: 'depricated',
+      },
     });
   }
 

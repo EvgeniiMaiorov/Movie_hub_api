@@ -17,12 +17,6 @@ export class CreateReviewDto {
   rating: number;
 
   @ApiProperty({
-    example: 'Jhon Doe',
-  })
-  @IsString()
-  author: string;
-
-  @ApiProperty({
     example: 1,
     description: 'ID of the movie being reviewed',
   })
