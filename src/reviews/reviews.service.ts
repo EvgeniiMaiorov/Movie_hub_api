@@ -48,4 +48,26 @@ export class ReviewsService {
       orderBy: { createdAt: 'desc' },
     });
   }
+
+  findById(id: number) {
+    return this.prisma.review.findUnique({
+      where: { id },
+      include: {
+        movie: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
+
+  delete(id: number) {
+    return this.prisma.review.delete({
+      where: { id },
+    });
+  }
 }
