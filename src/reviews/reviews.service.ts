@@ -13,7 +13,6 @@ export class ReviewsService {
         rating: createReviewDto.rating,
         movieId: createReviewDto.movieId,
         userId,
-        author: 'depricated',
       },
     });
   }

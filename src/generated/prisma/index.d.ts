@@ -2295,7 +2295,6 @@ export namespace Prisma {
     id: number | null
     text: string | null
     rating: number | null
-    author: string | null
     createdAt: Date | null
     updatedAt: Date | null
     movieId: number | null
@@ -2306,7 +2305,6 @@ export namespace Prisma {
     id: number | null
     text: string | null
     rating: number | null
-    author: string | null
     createdAt: Date | null
     updatedAt: Date | null
     movieId: number | null
@@ -2317,7 +2315,6 @@ export namespace Prisma {
     id: number
     text: number
     rating: number
-    author: number
     createdAt: number
     updatedAt: number
     movieId: number
@@ -2344,7 +2341,6 @@ export namespace Prisma {
     id?: true
     text?: true
     rating?: true
-    author?: true
     createdAt?: true
     updatedAt?: true
     movieId?: true
@@ -2355,7 +2351,6 @@ export namespace Prisma {
     id?: true
     text?: true
     rating?: true
-    author?: true
     createdAt?: true
     updatedAt?: true
     movieId?: true
@@ -2366,7 +2361,6 @@ export namespace Prisma {
     id?: true
     text?: true
     rating?: true
-    author?: true
     createdAt?: true
     updatedAt?: true
     movieId?: true
@@ -2464,7 +2458,6 @@ export namespace Prisma {
     id: number
     text: string
     rating: number
-    author: string
     createdAt: Date
     updatedAt: Date
     movieId: number
@@ -2494,7 +2487,6 @@ export namespace Prisma {
     id?: boolean
     text?: boolean
     rating?: boolean
-    author?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     movieId?: boolean
@@ -2507,7 +2499,6 @@ export namespace Prisma {
     id?: boolean
     text?: boolean
     rating?: boolean
-    author?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     movieId?: boolean
@@ -2520,7 +2511,6 @@ export namespace Prisma {
     id?: boolean
     text?: boolean
     rating?: boolean
-    author?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     movieId?: boolean
@@ -2533,14 +2523,13 @@ export namespace Prisma {
     id?: boolean
     text?: boolean
     rating?: boolean
-    author?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     movieId?: boolean
     userId?: boolean
   }
 
-  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "rating" | "author" | "createdAt" | "updatedAt" | "movieId" | "userId", ExtArgs["result"]["review"]>
+  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "rating" | "createdAt" | "updatedAt" | "movieId" | "userId", ExtArgs["result"]["review"]>
   export type ReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     movie?: boolean | MovieDefaultArgs<ExtArgs>
     user?: boolean | Review$userArgs<ExtArgs>
@@ -2564,7 +2553,6 @@ export namespace Prisma {
       id: number
       text: string
       rating: number
-      author: string
       createdAt: Date
       updatedAt: Date
       movieId: number
@@ -2997,7 +2985,6 @@ export namespace Prisma {
     readonly id: FieldRef<"Review", 'Int'>
     readonly text: FieldRef<"Review", 'String'>
     readonly rating: FieldRef<"Review", 'Int'>
-    readonly author: FieldRef<"Review", 'String'>
     readonly createdAt: FieldRef<"Review", 'DateTime'>
     readonly updatedAt: FieldRef<"Review", 'DateTime'>
     readonly movieId: FieldRef<"Review", 'Int'>
@@ -4594,7 +4581,6 @@ export namespace Prisma {
     id: 'id',
     text: 'text',
     rating: 'rating',
-    author: 'author',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     movieId: 'movieId',
@@ -4783,7 +4769,6 @@ export namespace Prisma {
     id?: IntFilter<"Review"> | number
     text?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
-    author?: StringFilter<"Review"> | string
     createdAt?: DateTimeFilter<"Review"> | Date | string
     updatedAt?: DateTimeFilter<"Review"> | Date | string
     movieId?: IntFilter<"Review"> | number
@@ -4796,7 +4781,6 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     rating?: SortOrder
-    author?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     movieId?: SortOrder
@@ -4812,7 +4796,6 @@ export namespace Prisma {
     NOT?: ReviewWhereInput | ReviewWhereInput[]
     text?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
-    author?: StringFilter<"Review"> | string
     createdAt?: DateTimeFilter<"Review"> | Date | string
     updatedAt?: DateTimeFilter<"Review"> | Date | string
     movieId?: IntFilter<"Review"> | number
@@ -4825,7 +4808,6 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     rating?: SortOrder
-    author?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     movieId?: SortOrder
@@ -4844,7 +4826,6 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Review"> | number
     text?: StringWithAggregatesFilter<"Review"> | string
     rating?: IntWithAggregatesFilter<"Review"> | number
-    author?: StringWithAggregatesFilter<"Review"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
     movieId?: IntWithAggregatesFilter<"Review"> | number
@@ -4994,7 +4975,6 @@ export namespace Prisma {
   export type ReviewCreateInput = {
     text: string
     rating: number
-    author: string
     createdAt?: Date | string
     updatedAt?: Date | string
     movie: MovieCreateNestedOneWithoutReviewsInput
@@ -5005,7 +4985,6 @@ export namespace Prisma {
     id?: number
     text: string
     rating: number
-    author: string
     createdAt?: Date | string
     updatedAt?: Date | string
     movieId: number
@@ -5015,7 +4994,6 @@ export namespace Prisma {
   export type ReviewUpdateInput = {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     movie?: MovieUpdateOneRequiredWithoutReviewsNestedInput
@@ -5026,7 +5004,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     movieId?: IntFieldUpdateOperationsInput | number
@@ -5037,7 +5014,6 @@ export namespace Prisma {
     id?: number
     text: string
     rating: number
-    author: string
     createdAt?: Date | string
     updatedAt?: Date | string
     movieId: number
@@ -5047,7 +5023,6 @@ export namespace Prisma {
   export type ReviewUpdateManyMutationInput = {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5056,7 +5031,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     movieId?: IntFieldUpdateOperationsInput | number
@@ -5324,7 +5298,6 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     rating?: SortOrder
-    author?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     movieId?: SortOrder
@@ -5342,7 +5315,6 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     rating?: SortOrder
-    author?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     movieId?: SortOrder
@@ -5353,7 +5325,6 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     rating?: SortOrder
-    author?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     movieId?: SortOrder
@@ -5783,7 +5754,6 @@ export namespace Prisma {
   export type ReviewCreateWithoutMovieInput = {
     text: string
     rating: number
-    author: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutReviewsInput
@@ -5793,7 +5763,6 @@ export namespace Prisma {
     id?: number
     text: string
     rating: number
-    author: string
     createdAt?: Date | string
     updatedAt?: Date | string
     userId?: number | null
@@ -5832,7 +5801,6 @@ export namespace Prisma {
     id?: IntFilter<"Review"> | number
     text?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
-    author?: StringFilter<"Review"> | string
     createdAt?: DateTimeFilter<"Review"> | Date | string
     updatedAt?: DateTimeFilter<"Review"> | Date | string
     movieId?: IntFilter<"Review"> | number
@@ -5950,7 +5918,6 @@ export namespace Prisma {
   export type ReviewCreateWithoutUserInput = {
     text: string
     rating: number
-    author: string
     createdAt?: Date | string
     updatedAt?: Date | string
     movie: MovieCreateNestedOneWithoutReviewsInput
@@ -5960,7 +5927,6 @@ export namespace Prisma {
     id?: number
     text: string
     rating: number
-    author: string
     createdAt?: Date | string
     updatedAt?: Date | string
     movieId: number
@@ -5996,7 +5962,6 @@ export namespace Prisma {
     id?: number
     text: string
     rating: number
-    author: string
     createdAt?: Date | string
     updatedAt?: Date | string
     userId?: number | null
@@ -6005,7 +5970,6 @@ export namespace Prisma {
   export type ReviewUpdateWithoutMovieInput = {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutReviewsNestedInput
@@ -6015,7 +5979,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -6025,7 +5988,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -6035,7 +5997,6 @@ export namespace Prisma {
     id?: number
     text: string
     rating: number
-    author: string
     createdAt?: Date | string
     updatedAt?: Date | string
     movieId: number
@@ -6044,7 +6005,6 @@ export namespace Prisma {
   export type ReviewUpdateWithoutUserInput = {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     movie?: MovieUpdateOneRequiredWithoutReviewsNestedInput
@@ -6054,7 +6014,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     movieId?: IntFieldUpdateOperationsInput | number
@@ -6064,7 +6023,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
-    author?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     movieId?: IntFieldUpdateOperationsInput | number
