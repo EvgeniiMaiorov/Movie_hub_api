@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 
 import { MoviesService } from './movies.service';
@@ -16,6 +17,10 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 import { ParseIntPipe } from '@nestjs/common';
 import { PaginationDto } from './dto/pagination.dto';
 import { ReviewsService } from '../reviews/reviews.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Role } from 'src/generated/prisma';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('movies')
 export class MoviesController {
@@ -62,6 +67,8 @@ export class MoviesController {
     return this.moviesService.create(createMovieDto);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     await this.moviesService.delete(id);
