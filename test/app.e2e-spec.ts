@@ -40,6 +40,7 @@ describe('Auth E2E', () => {
   let httpApp: App;
   let prisma: PrismaService;
   let testMovieId: number;
+  const testMovieIds: number[] = [];
   const testEmails: string[] = [];
 
   const createTestEmail = () => {
@@ -50,7 +51,10 @@ describe('Auth E2E', () => {
     return email;
   };
 
-  const registerAndLogin = async (name = 'E2E User') => {
+  const registerAndLogin = async (
+    name = 'E2E User',
+    role: Role = Role.USER,
+  ) => {
     const email = createTestEmail();
 
     await request(httpApp)
@@ -61,6 +65,13 @@ describe('Auth E2E', () => {
         name,
       })
       .expect(201);
+
+    if (role !== Role.USER) {
+      await prisma.user.update({
+        where: { email },
+        data: { role },
+      });
+    }
 
     const loginResponse = await request(httpApp)
       .post('/auth/login')
@@ -75,6 +86,22 @@ describe('Auth E2E', () => {
       email,
       token: loginResponseBody.access_token,
     };
+  };
+
+  const createTestMovie = async () => {
+    const movie = await prisma.movie.create({
+      data: {
+        title: 'E2E Test Movie',
+        description: 'Movie created for E2E tests',
+        releaseYear: 2026,
+        genre: 'Test',
+        rating: 8,
+      },
+    });
+
+    testMovieIds.push(movie.id);
+
+    return movie;
   };
 
   beforeAll(async () => {
@@ -98,25 +125,17 @@ describe('Auth E2E', () => {
     httpApp = app.getHttpAdapter().getInstance() as App;
     prisma = moduleFixture.get<PrismaService>(PrismaService);
 
-    const movie = await prisma.movie.create({
-      data: {
-        title: 'E2E Test Movie',
-        description: 'Movie created for E2E review tests',
-        releaseYear: 2026,
-        genre: 'Test',
-        rating: 8,
-      },
-    });
+    const movie = await createTestMovie();
 
     testMovieId = movie.id;
   });
 
   afterAll(async () => {
     await prisma.review.deleteMany({
-      where: { movieId: testMovieId },
+      where: { movieId: { in: testMovieIds } },
     });
-    await prisma.movie.delete({
-      where: { id: testMovieId },
+    await prisma.movie.deleteMany({
+      where: { id: { in: testMovieIds } },
     });
     await prisma.user.deleteMany({
       where: { email: { in: testEmails } },
@@ -283,5 +302,75 @@ describe('Auth E2E', () => {
       .delete(`/reviews/${reviewResponseBody.id}`)
       .set('Authorization', `Bearer ${author.token}`)
       .expect(404);
+  });
+
+  it('should allow review owner to delete review', async () => {
+    const author = await registerAndLogin('Review Owner');
+
+    const reviewResponse = await request(httpApp)
+      .post('/reviews')
+      .set('Authorization', `Bearer ${author.token}`)
+      .send({
+        text: 'Owner can delete this review',
+        rating: 8,
+        movieId: testMovieId,
+      })
+      .expect(201);
+    const reviewResponseBody = reviewResponse.body as ReviewResponseBody;
+
+    const response = await request(httpApp)
+      .delete(`/reviews/${reviewResponseBody.id}`)
+      .set('Authorization', `Bearer ${author.token}`)
+      .expect(200);
+
+    expect(response.body).toMatchObject({
+      message: 'Review deleted successfully',
+    });
+  });
+
+  it('should allow review owner to update review', async () => {
+    const author = await registerAndLogin('Review Owner');
+
+    const reviewResponse = await request(httpApp)
+      .post('/reviews')
+      .set('Authorization', `Bearer ${author.token}`)
+      .send({
+        text: 'Review before update',
+        rating: 8,
+        movieId: testMovieId,
+      })
+      .expect(201);
+    const reviewResponseBody = reviewResponse.body as ReviewResponseBody;
+
+    const response = await request(httpApp)
+      .patch(`/reviews/${reviewResponseBody.id}`)
+      .set('Authorization', `Bearer ${author.token}`)
+      .send({
+        text: 'Updated text',
+      })
+      .expect(200);
+    const responseBody = response.body as ReviewResponseBody;
+
+    expect(responseBody.text).toBe('Updated text');
+  });
+
+  it('should return 403 when user deletes movie', async () => {
+    const user = await registerAndLogin('Movie User');
+    const movie = await createTestMovie();
+
+    await request(httpApp)
+      .delete(`/movies/${movie.id}`)
+      .set('Authorization', `Bearer ${user.token}`)
+      .expect(403);
+  });
+
+  it('should allow admin to delete movie', async () => {
+    const admin = await registerAndLogin('Movie Admin', Role.ADMIN);
+    const movie = await createTestMovie();
+
+    await request(httpApp)
+      .delete(`/movies/${movie.id}`)
+      .set('Authorization', `Bearer ${admin.token}`)
+      .expect(200);
   });
 });
