@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Role } from '../generated/prisma/client';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -50,7 +51,7 @@ describe('AuthController', () => {
   });
 
   it('should return current user', () => {
-    const user = { id: 1, email: 'john@example.com', role: 'USER' };
+    const user = { id: 1, email: 'john@example.com', role: Role.USER };
 
     expect(controller.me(user)).toBe(user);
   });

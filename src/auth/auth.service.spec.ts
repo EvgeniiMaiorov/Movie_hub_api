@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Role } from '../generated/prisma/client';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 
@@ -25,7 +26,7 @@ describe('AuthService', () => {
     email: 'john@example.com',
     password: 'hashed-password',
     name: 'John',
-    role: 'USER',
+    role: Role.USER,
   };
 
   beforeEach(async () => {

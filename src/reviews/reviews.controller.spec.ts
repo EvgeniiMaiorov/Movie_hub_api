@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Role } from '../generated/prisma/client';
 import { ReviewsController } from './reviews.controller';
 import { ReviewsService } from './reviews.service';
 
@@ -14,7 +15,7 @@ describe('ReviewsController', () => {
     update: jest.Mock;
   };
 
-  const user = { id: 2, email: 'john@example.com', role: 'USER' };
+  const user = { id: 2, email: 'john@example.com', role: Role.USER };
   const review = {
     id: 1,
     text: 'Great movie',
