@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { Role } from '../../generated/prisma/client';
 import type { AuthUser } from '../types/auth-user.type';
+import { getJwtSecret } from '../config/jwt.config';
 
 type JwtPayload = {
   sub: number;
@@ -15,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: 'dev_secret',
+      secretOrKey: getJwtSecret(),
     });
   }
 
