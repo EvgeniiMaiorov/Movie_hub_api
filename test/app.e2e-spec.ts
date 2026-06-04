@@ -11,6 +11,16 @@ type RegisterResponseBody = {
   password?: string;
 };
 
+type LoginResponseBody = {
+  access_token: string;
+};
+
+type CurrentUserResponseBody = {
+  id: number;
+  email: string;
+  role: string;
+};
+
 describe('Auth E2E', () => {
   let app: INestApplication;
   let httpApp: App;
@@ -59,5 +69,35 @@ describe('Auth E2E', () => {
     });
 
     expect(responseBody.password).toBeUndefined();
+  });
+
+  it('should login and get current user', async () => {
+    const email = `test-${Date.now()}@example.com`;
+
+    await request(httpApp)
+      .post('/auth/register')
+      .send({
+        email,
+        password: 'password123',
+        name: 'John',
+      })
+      .expect(201);
+
+    const loginResponse = await request(httpApp)
+      .post('/auth/login')
+      .send({
+        email,
+        password: 'password123',
+      })
+      .expect(201);
+    const loginResponseBody = loginResponse.body as LoginResponseBody;
+
+    const meResponse = await request(httpApp)
+      .get('/auth/me')
+      .set('Authorization', `Bearer ${loginResponseBody.access_token}`)
+      .expect(200);
+    const meResponseBody = meResponse.body as CurrentUserResponseBody;
+
+    expect(meResponseBody.email).toBe(email);
   });
 });
