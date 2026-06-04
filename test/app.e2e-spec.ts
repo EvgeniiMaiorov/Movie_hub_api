@@ -46,6 +46,33 @@ describe('Auth E2E', () => {
     return email;
   };
 
+  const registerAndLogin = async (name = 'E2E User') => {
+    const email = createTestEmail();
+
+    await request(httpApp)
+      .post('/auth/register')
+      .send({
+        email,
+        password: 'password123',
+        name,
+      })
+      .expect(201);
+
+    const loginResponse = await request(httpApp)
+      .post('/auth/login')
+      .send({
+        email,
+        password: 'password123',
+      })
+      .expect(201);
+    const loginResponseBody = loginResponse.body as LoginResponseBody;
+
+    return {
+      email,
+      token: loginResponseBody.access_token,
+    };
+  };
+
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -157,29 +184,11 @@ describe('Auth E2E', () => {
   });
 
   it('should create review with token', async () => {
-    const email = createTestEmail();
-
-    await request(httpApp)
-      .post('/auth/register')
-      .send({
-        email,
-        password: 'password123',
-        name: 'Review Author',
-      })
-      .expect(201);
-
-    const loginResponse = await request(httpApp)
-      .post('/auth/login')
-      .send({
-        email,
-        password: 'password123',
-      })
-      .expect(201);
-    const loginResponseBody = loginResponse.body as LoginResponseBody;
+    const author = await registerAndLogin('Review Author');
 
     const response = await request(httpApp)
       .post('/reviews')
-      .set('Authorization', `Bearer ${loginResponseBody.access_token}`)
+      .set('Authorization', `Bearer ${author.token}`)
       .send({
         text: 'Great E2E movie',
         rating: 9,
@@ -194,5 +203,50 @@ describe('Auth E2E', () => {
       movieId: testMovieId,
     });
     expect(responseBody.userId).toBeGreaterThan(0);
+  });
+
+  it('should return 403 when another user deletes a review', async () => {
+    const author = await registerAndLogin('Review Owner');
+    const anotherUser = await registerAndLogin('Another User');
+
+    const reviewResponse = await request(httpApp)
+      .post('/reviews')
+      .set('Authorization', `Bearer ${author.token}`)
+      .send({
+        text: 'Owned review',
+        rating: 8,
+        movieId: testMovieId,
+      })
+      .expect(201);
+    const reviewResponseBody = reviewResponse.body as ReviewResponseBody;
+
+    await request(httpApp)
+      .delete(`/reviews/${reviewResponseBody.id}`)
+      .set('Authorization', `Bearer ${anotherUser.token}`)
+      .expect(403);
+  });
+
+  it('should return 403 when another user updates a review', async () => {
+    const author = await registerAndLogin('Review Owner');
+    const anotherUser = await registerAndLogin('Another User');
+
+    const reviewResponse = await request(httpApp)
+      .post('/reviews')
+      .set('Authorization', `Bearer ${author.token}`)
+      .send({
+        text: 'Review to update',
+        rating: 8,
+        movieId: testMovieId,
+      })
+      .expect(201);
+    const reviewResponseBody = reviewResponse.body as ReviewResponseBody;
+
+    await request(httpApp)
+      .patch(`/reviews/${reviewResponseBody.id}`)
+      .set('Authorization', `Bearer ${anotherUser.token}`)
+      .send({
+        text: 'Illegal update',
+      })
+      .expect(403);
   });
 });
