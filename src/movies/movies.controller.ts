@@ -62,6 +62,8 @@ export class MoviesController {
     return this.reviewsService.findByMovieId(id);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @Post()
   create(@Body() createMovieDto: CreateMovieDto) {
     return this.moviesService.create(createMovieDto);
@@ -76,6 +78,8 @@ export class MoviesController {
     return { message: `Movie with id ${id} has been deleted successfully` };
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,

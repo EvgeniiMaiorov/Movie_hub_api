@@ -1,8 +1,40 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import { GUARDS_METADATA } from '@nestjs/common/constants';
+import { Role } from 'src/generated/prisma';
+import { ROLES_KEY } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { MoviesController } from './movies.controller';
 import { MoviesService } from './movies.service';
 import { ReviewsService } from '../reviews/reviews.service';
+
+type ProtectedMovieMethod = 'create' | 'update' | 'delete';
+
+const protectedMovieMethods: ProtectedMovieMethod[] = [
+  'create',
+  'update',
+  'delete',
+];
+
+const getControllerHandler = (methodName: ProtectedMovieMethod) => {
+  const descriptor = Object.getOwnPropertyDescriptor(
+    MoviesController.prototype,
+    methodName,
+  );
+
+  if (!descriptor || typeof descriptor.value !== 'function') {
+    throw new Error(`Controller method ${methodName} not found`);
+  }
+
+  return descriptor.value as object;
+};
+
+const getRoleMetadata = (target: object) =>
+  Reflect.getMetadata(ROLES_KEY, target) as Role[] | undefined;
+
+const getGuardMetadata = (target: object) =>
+  Reflect.getMetadata(GUARDS_METADATA, target) as unknown[] | undefined;
 
 describe('MoviesController', () => {
   let controller: MoviesController;
@@ -113,10 +145,10 @@ describe('MoviesController', () => {
     expect(moviesService.create).toHaveBeenCalledWith(dto);
   });
 
-  it('should update movie', () => {
-    moviesService.update.mockReturnValue({ ...movie, title: 'Updated' });
+  it('should update movie', async () => {
+    moviesService.update.mockResolvedValue({ ...movie, title: 'Updated' });
 
-    controller.update(1, { title: 'Updated' });
+    await controller.update(1, { title: 'Updated' });
 
     expect(moviesService.update).toHaveBeenCalledWith(1, { title: 'Updated' });
   });
@@ -129,4 +161,16 @@ describe('MoviesController', () => {
     });
     expect(moviesService.delete).toHaveBeenCalledWith(1);
   });
+
+  it.each(protectedMovieMethods)(
+    'should protect %s with admin role',
+    (methodName) => {
+      const handler = getControllerHandler(methodName);
+      const roles = getRoleMetadata(handler);
+      const guards = getGuardMetadata(handler);
+
+      expect(roles).toEqual([Role.ADMIN]);
+      expect(guards).toEqual([JwtAuthGuard, RolesGuard]);
+    },
+  );
 });
