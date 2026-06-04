@@ -352,6 +352,7 @@ describe('Auth E2E', () => {
     const responseBody = response.body as ReviewResponseBody;
 
     expect(responseBody.text).toBe('Updated text');
+    expect(responseBody.rating).toBe(8);
   });
 
   it('should return 403 when user deletes movie', async () => {
@@ -372,5 +373,7 @@ describe('Auth E2E', () => {
       .delete(`/movies/${movie.id}`)
       .set('Authorization', `Bearer ${admin.token}`)
       .expect(200);
+
+    await request(httpApp).get(`/movies/${movie.id}`).expect(404);
   });
 });
